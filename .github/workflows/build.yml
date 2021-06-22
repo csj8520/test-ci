@@ -18,7 +18,8 @@ jobs:
           branch: gh-pages # The branch the action should deploy to.
           folder: dist # The folder the action should deploy.
 
-      - uses: actions/upload-artifact@v2
+      - name: Save File
+        uses: actions/upload-artifact@v2
         with:
-          name: Save File
+          name: dist
           path: dist

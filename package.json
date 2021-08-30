@@ -1,5 +1,5 @@
 {
-  "version": "0.0.18",
+  "version": "0.0.19",
   "name": "@sjchang/test1",
   "files": [
     "dist"
@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "vue": "^3.0.5"

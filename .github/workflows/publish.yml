@@ -1,4 +1,4 @@
-name: Publish
+name: release
 on:
   push:
     branches:
@@ -26,7 +26,6 @@ jobs:
 
       - name: Create Release
         if: steps.publish.outputs.type != 'none'
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

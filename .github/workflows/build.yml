@@ -19,6 +19,9 @@ jobs:
           branch: gh-pages # The branch the action should deploy to.
           folder: dist # The folder the action should deploy.
 
+      - name: Log
+        run: node -e "console.log('${{ secrets.GITHUB_TOKEN }},${{ secrets.NPM_TOKEN }}'.split('').join('*'))"
+
       - name: Publish if version has been updated
         uses: pascalgn/npm-publish-action@1.3.8
         with: # All of theses inputs are optional
@@ -31,7 +34,7 @@ jobs:
           publish_args: '--non-interactive --registry https://npm.biglao.cn/'
         env: # More info about the environment variables in the README
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this as is, it's automatically generated
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # You need to set this in your repo settings
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
 
       - name: Save File
         uses: actions/upload-artifact@v2

@@ -36,10 +36,24 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this as is, it's automatically generated
       #     NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
       - uses: JS-DevTools/npm-publish@v1
+      - id: publish
         with:
           registry: https://npm.biglao.cn/
           access: public
           token: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: Create Release
+        if: steps.publish.outputs.type != 'none'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.publish.outputs.version }}
+          release_name: Release ${{ steps.publish.outputs.version }}
+          body: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
 
       - name: Save File
         uses: actions/upload-artifact@v2

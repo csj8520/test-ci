@@ -1,9 +1,11 @@
 {
-  "version": "0.0.6",
+  "version": "0.0.7",
   "name": "@sjchang/test1",
   "files": [
     "dist"
   ],
+  "author": "csj8520",
+  "main": "dist/index.html",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",

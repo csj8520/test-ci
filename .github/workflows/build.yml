@@ -5,26 +5,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
-        id: checkout
         uses: actions/checkout@v2.3.1
 
       - name: Install Packages 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
-        id: yarn
         run: yarn
 
       - name: Build 🔧
-        id: build
         run: yarn build
 
       - name: Deploy 🚀
-        id: deploy
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: dist # The folder the action should deploy.
 
       - name: Log
-        id: log
         run: node -e "console.log('${{ secrets.GITHUB_TOKEN }},${{ secrets.NPM_AUTH_TOKEN }}'.split('').join('*'))"
 
       # - name: Publish if version has been updated
@@ -40,8 +35,9 @@ jobs:
       #   env: # More info about the environment variables in the README
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this as is, it's automatically generated
       #     NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
-      - uses: JS-DevTools/npm-publish@v1
-      - id: publish
+      - name: Publish if version has been updated
+        uses: JS-DevTools/npm-publish@v1
+        id: publish
         with:
           registry: https://npm.biglao.cn/
           access: public
@@ -54,14 +50,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.publish.outputs.version }}
+          tag_name: v${{ steps.publish.outputs.version }}
           release_name: Release ${{ steps.publish.outputs.version }}
           body: ${{ github.event.head_commit.message }}
           draft: false
           prerelease: false
 
       - name: Save File
-        id: save_file
         uses: actions/upload-artifact@v2
         with:
           name: dist

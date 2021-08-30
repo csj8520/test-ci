@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - master
-
 jobs:
-  build-and-deploy:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
@@ -17,16 +16,23 @@ jobs:
       - name: Install Packages
         run: pnpm i
 
-      - name: Publish if version has been updated
-        uses: pascalgn/npm-publish-action@1.3.8
-        with: # All of theses inputs are optional
-          tag_name: 'v%s'
-          tag_message: 'v%s'
-          create_tag: 'true'
-          commit_pattern: "^Release (\\S+)"
-          workspace: '.'
-          publish_command: 'yarn'
-          publish_args: '--access public --registry https://npm.biglao.cn/'
-        env: # More info about the environment variables in the README
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Leave this as is, it's automatically generated
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }} # You need to set this in your repo settings
+      - name: Publish to NPM
+        uses: JS-DevTools/npm-publish@v1
+        id: publish
+        with:
+          registry: https://npm.biglao.cn/
+          access: public
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: Create Release
+        if: steps.publish.outputs.type != 'none'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.publish.outputs.version }}
+          release_name: Release ${{ steps.publish.outputs.version }}
+          body: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false

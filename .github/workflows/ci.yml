@@ -53,8 +53,8 @@ jobs:
         run: |-
           node -v
           npm -v
-          hash pnpm &> /dev/null && echo has pnpm
-          hash pnpm &> /dev/null || not has pnpm
+          type pnpm &> /dev/null && echo has pnpm
+          type pnpm &> /dev/null || not has pnpm
           ls -la
           npm i -g pnpm
           pnpm i

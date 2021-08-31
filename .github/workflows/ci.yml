@@ -7,7 +7,7 @@ on:
 jobs:
   deploy:
     if: contains(github.event.head_commit.message, 'deploy')
-    runs-on: ubuntu-latest
+    runs-on: &os ubuntu-latest
     # name: Node ${{ matrix.node }} on ${{ matrix.os }}
     # runs-on: ${{ matrix.os }}
     # strategy:
@@ -21,10 +21,12 @@ jobs:
     #       - 14
     #       - 16
     steps:
-      - name: Checkout 🛎️
+      - &checkout
+        name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
 
-      - name: Install Packages 🔧
+      - &installPackages
+        name: Install Packages 🔧
         run: npm i -g pnpm && pnpm i
 
       - name: Build 🔧
@@ -44,21 +46,10 @@ jobs:
 
   release:
     if: contains(github.event.head_commit.message, 'release')
-    runs-on: ubuntu-latest
+    runs-on: *os
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2.3.1
-
-      - name: Install Packages 🔧
-        run: |-
-          node -v
-          npm -v
-          hash pnpm &> /dev/null && echo has pnpm
-          hash pnpm &> /dev/null || echo not has pnpm
-          hash pnpm &> /dev/null
-          ls -la
-          npm i -g pnpm
-          pnpm i
+      - *checkout
+      - *installPackages
 
       - name: Publish to NPM 🚀
         uses: JS-DevTools/npm-publish@v1

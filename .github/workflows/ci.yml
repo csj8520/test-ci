@@ -55,17 +55,10 @@ jobs:
           npm -v
           hash pnpm &> /dev/null && echo has pnpm
           hash pnpm &> /dev/null || echo not has pnpm
-          hash pnpm
+          hash pnpm &> /dev/null
           ls -la
           npm i -g pnpm
           pnpm i
-
-      - run: |-
-          exit 0
-      - run: |-
-          exit 1
-      - run: |-
-          exit 2
 
       - name: Publish to NPM 🚀
         uses: JS-DevTools/npm-publish@v1

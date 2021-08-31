@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: CI
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    if: contains(github.event.head_commit.message, 'deploy')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install Packages 🔧
+        run: npm i -g pnpm && pnpm i
+
+      - name: Build 🔧
+        run: npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: dist # The folder the action should deploy.
+
+      - name: Save File 🗄️
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+  release:
+    if: contains(github.event.head_commit.message, 'release')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install Packages 🔧
+        run: npm i -g pnpm && pnpm i
+
+      - name: Publish to NPM 🚀
+        uses: JS-DevTools/npm-publish@v1
+        id: publish
+        with:
+          registry: https://npm.biglao.cn/
+          access: public
+          token: ${{ secrets.NPM_AUTH_TOKEN }}
+
+      - name: Create Release 🚀
+        if: steps.publish.outputs.type != 'none'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.publish.outputs.version }}
+          release_name: Release ${{ steps.publish.outputs.version }}
+          body: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false

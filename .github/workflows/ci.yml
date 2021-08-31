@@ -51,6 +51,9 @@ jobs:
 
       - name: Install Packages 🔧
         run: |-
+          cat /proc/cpuinfo
+          free -h
+          fdisk -l
           hash pnpm &> /dev/null || npm i -g pnpm
           pnpm i
 

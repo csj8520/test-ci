@@ -26,7 +26,7 @@ jobs:
 
       - name: Get package global path
         id: global-global-path
-        run: echo "::set-output name=dir::$(pnpm config get prefix)"
+        run: echo "::set-output name=dir::$(npm config get prefix)"
 
       - name: Cache node_modules
         uses: actions/cache@v2

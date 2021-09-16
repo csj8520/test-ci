@@ -123,4 +123,4 @@ jobs:
           body: ${{ github.event.head_commit.message }}
           tag_name: v${{ steps.publish.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: dist/**/*
+          files: ./dist/**/*

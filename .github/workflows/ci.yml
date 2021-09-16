@@ -115,6 +115,7 @@ jobs:
           tag: v${{ steps.publish.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: ./dist/**/*
+          removeArtifacts: true
       # - name: Create Release 🚀
       #   # if: steps.publish.outputs.type != 'none'
       #   uses: softprops/action-gh-release@v1

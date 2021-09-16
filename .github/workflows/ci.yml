@@ -84,12 +84,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Install Packages 🔧
-        run: |-
-          cat /proc/cpuinfo
-          free -h
-          sudo fdisk -l
-          hash pnpm &> /dev/null || npm i -g pnpm
-          pnpm i
+        run: npm i -g pnpm && pnpm i
 
       - name: Publish to NPM 🚀
         uses: JS-DevTools/npm-publish@v1
@@ -124,8 +119,8 @@ jobs:
         if: steps.publish.outputs.type != 'none'
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: Release ${{ steps.publish.outputs.version }}
+          name: Release ${{ steps.publish.outputs.version }}
           body: ${{ github.event.head_commit.message }}
-          tag: v${{ steps.publish.outputs.version }}
+          tag_name: v${{ steps.publish.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
           files: dist

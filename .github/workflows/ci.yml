@@ -28,12 +28,11 @@ jobs:
       #   id: global-global-path
       #   run: echo "::set-output name=dir::$(npm config get prefix)"
 
-      - name: Cache node_modules
+      - name: Cache Modules 📦
         uses: actions/cache@v2
         env:
           cache-name: cache-node-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
           path: |
             ~/.pnpm-store
             ~/.npm
@@ -69,13 +68,15 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
 
-      - name: Cache node_modules
+      - name: Cache Modules 📦
         uses: actions/cache@v2
         env:
           cache-name: cache-node-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: ./node_modules
+          path: |
+            ~/.pnpm-store
+            ~/.npm
+            ./node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -98,14 +99,24 @@ jobs:
           access: public
           token: ${{ secrets.NPM_AUTH_TOKEN }}
 
+      # - name: Create Release 🚀
+      #   if: steps.publish.outputs.type != 'none'
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ steps.publish.outputs.version }}
+      #     release_name: Release ${{ steps.publish.outputs.version }}
+      #     body: ${{ github.event.head_commit.message }}
+      #     draft: false
+      #     prerelease: false
+
       - name: Create Release 🚀
         if: steps.publish.outputs.type != 'none'
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: v${{ steps.publish.outputs.version }}
-          release_name: Release ${{ steps.publish.outputs.version }}
+          name: Release ${{ steps.publish.outputs.version }}
           body: ${{ github.event.head_commit.message }}
-          draft: false
-          prerelease: false
+          tag: v${{ steps.publish.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: "dist"

@@ -111,12 +111,21 @@ jobs:
       #     draft: false
       #     prerelease: false
 
+      # - name: Create Release 🚀
+      #   if: steps.publish.outputs.type != 'none'
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     name: Release ${{ steps.publish.outputs.version }}
+      #     body: ${{ github.event.head_commit.message }}
+      #     tag: v${{ steps.publish.outputs.version }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     artifacts: "dist"
       - name: Create Release 🚀
         if: steps.publish.outputs.type != 'none'
-        uses: ncipollo/release-action@v1
+        uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ steps.publish.outputs.version }}
+          tag_name: Release ${{ steps.publish.outputs.version }}
           body: ${{ github.event.head_commit.message }}
           tag: v${{ steps.publish.outputs.version }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "dist"
+          files: dist

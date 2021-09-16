@@ -94,28 +94,28 @@ jobs:
           access: public
           token: ${{ secrets.NPM_AUTH_TOKEN }}
 
-      # - name: Create Release 🚀
-      #   if: steps.publish.outputs.type != 'none'
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: v${{ steps.publish.outputs.version }}
-      #     release_name: Release ${{ steps.publish.outputs.version }}
-      #     body: ${{ github.event.head_commit.message }}
-      #     draft: false
-      #     prerelease: false
-
       - name: Create Release 🚀
         # if: steps.publish.outputs.type != 'none'
-        uses: ncipollo/release-action@v1
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Release ${{ steps.publish.outputs.version }}
+          tag_name: v${{ steps.publish.outputs.version }}
+          release_name: Release ${{ steps.publish.outputs.version }}
           body: ${{ github.event.head_commit.message }}
-          tag: v${{ steps.publish.outputs.version }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: ./dist/**/*
-          removeArtifacts: true
+          draft: false
+          prerelease: false
+
+      # - name: Create Release 🚀
+      #   # if: steps.publish.outputs.type != 'none'
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     name: Release ${{ steps.publish.outputs.version }}
+      #     body: ${{ github.event.head_commit.message }}
+      #     tag: v${{ steps.publish.outputs.version }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     artifacts: ./dist/**/*
+      #     removeArtifacts: true
       # - name: Create Release 🚀
       #   # if: steps.publish.outputs.type != 'none'
       #   uses: softprops/action-gh-release@v1

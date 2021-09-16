@@ -24,9 +24,9 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
 
-      - name: Get package global path
-        id: global-global-path
-        run: echo "::set-output name=dir::$(npm config get prefix)"
+      # - name: Get package global path
+      #   id: global-global-path
+      #   run: echo "::set-output name=dir::$(npm config get prefix)"
 
       - name: Cache node_modules
         uses: actions/cache@v2
@@ -35,9 +35,9 @@ jobs:
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: |
-            ${{ steps.global-global-path.outputs.dir }}
-            ./node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./pnpm-lock.yaml') }}
+            ~/.pnpm-store
+            ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
